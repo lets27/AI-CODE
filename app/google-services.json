@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "26327810159",
+    "project_id": "brandnewsuitcase",
+    "storage_bucket": "brandnewsuitcase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26327810159:android:3aba2ba55570a712534d9a",
+        "android_client_info": {
+          "package_name": "com.example.brandnewsuitecase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv7E4iNdMX1_FuFNCmfYTkCvYHXwGyifk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
