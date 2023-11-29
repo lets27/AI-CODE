@@ -1,12 +1,12 @@
 package com.example.brandnewsuitecase.Models;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 public class Product implements Parcelable {
-    private String itemName,price,description,image,itemID;
+    private String itemName,price,description,itemID;
+    private String image;
 
     public Product() {
     }
@@ -23,7 +23,7 @@ public class Product implements Parcelable {
         itemName = in.readString();
         price = in.readString();
         description = in.readString();
-        image = in.readString();
+        image = in.readString();//to load the image
 
         itemID = in.readString();
     }
@@ -101,7 +101,7 @@ public class Product implements Parcelable {
         parcel.writeString(itemName);
         parcel.writeString(price);
         parcel.writeString(description);
-        parcel.writeString(image);
+        parcel.writeString(image);//writing parcelable object
 
         parcel.writeString(itemID);
     }

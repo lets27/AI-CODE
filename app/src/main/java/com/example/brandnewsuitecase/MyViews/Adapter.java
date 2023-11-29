@@ -1,14 +1,12 @@
 package com.example.brandnewsuitecase.MyViews;
 
-
+import com.example.brandnewsuitecase.Models.Product;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -25,12 +23,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     int lastPos = 1;
     private ArrayList<Product> itemList;
     private Context context;
-   // private CourseClickInterface courseClickInterface;
+    private ItemClickInterface itemClickInterface;
 
-    public Adapter(ArrayList<Product> itemList, Context context /*CourseClickInterface courseClickInterface*/) {
+    public Adapter(ArrayList<Product> itemList, Context context, ItemClickInterface itemClickInterface) {
         this.itemList = itemList;
         this.context = context;
-        //this.courseClickInterface = courseClickInterface;
+        this.itemClickInterface = itemClickInterface;
     }
 
     @NonNull
@@ -47,46 +45,40 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         Glide.with(context).load(itemList.get(position).getImage()).into(holder.thisImageView);
         holder.itemNameview.setText(model.getItemName());
         holder.price.setText(model.getPrice());
-    }
+
         //setAnimation(holder.itemView, position);
 
-      /*  // Handle long press event
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+
+        // Handle long press event
+   /*    holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 // Call the modified method to launch SendMessageActivity
                 launchSendMessageActivity(model);
                 return true;
-            }
-        });*/
 
-      /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
+            }
+        });
+*/
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int clickedPosition = holder.getAdapterPosition();
-                courseClickInterface.onCourseClick(clickedPosition);
+                itemClickInterface.onItemClick(clickedPosition);
             }
         });
     }
 
-  /*  private void launchSendMessageActivity(Product model) {
+  /* private void launchSendMessageActivity(Product model) {
         // Modify this part to launch SendMessageActivity
         // Use context to start the new activity and pass the selected course details
         Intent intent = new Intent(context, MessageActivity.class);
         intent.putExtra("courseDetails", model);
         context.startActivity(intent);
-    }
+    }*/
 
-    public void setAnimation(View itemView, int position) {
-        if (position > lastPos) {
-            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
-            itemView.setAnimation(animation);
-            lastPos = position;
-        } else {
-            itemView.clearAnimation();
-        }
-    }
-*/
+
+
     @Override
     public int getItemCount() {
         return itemList.size();
@@ -104,7 +96,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         }
     }
 
- /*   public interface CourseClickInterface {
-        void onCourseClick(int position);
-    }*/
+    public interface ItemClickInterface {
+        void onItemClick(int position);
+    }
 }

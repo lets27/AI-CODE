@@ -28,7 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class homeScreen extends AppCompatActivity /*CourseClickInterface*/ {
+public class homeScreen extends AppCompatActivity implements Adapter.ItemClickInterface {
 
     //private FirebaseAuth auth;
     private Button btn;
@@ -43,6 +43,7 @@ public class homeScreen extends AppCompatActivity /*CourseClickInterface*/ {
     private DatabaseReference databaseReference;
 
     private FloatingActionButton add;
+
 
     private  Adapter itemAdapter;
 
@@ -60,12 +61,14 @@ public class homeScreen extends AppCompatActivity /*CourseClickInterface*/ {
         modelList = new ArrayList<>();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("courses");
-        itemAdapter = new Adapter(modelList, homeScreen.this);
+        itemAdapter = new Adapter(modelList, homeScreen.this,this);
 
         // set recycler view
         if (ReView != null) {
             ReView.setLayoutManager(new LinearLayoutManager(this));
             ReView.setAdapter(itemAdapter);
+
+
         }
 
         // Set up the click listener for the FloatingActionButton
@@ -79,6 +82,8 @@ public class homeScreen extends AppCompatActivity /*CourseClickInterface*/ {
 
         // Fetch data from Firebase
         getAllCourses();
+
+
     }
 
     public void getAllCourses() {
@@ -86,8 +91,34 @@ public class homeScreen extends AppCompatActivity /*CourseClickInterface*/ {
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                modelList.add(snapshot.getValue(Product.class));
-                itemAdapter.notifyDataSetChanged();
+                Product newProduct = snapshot.getValue(Product.class);
+                boolean containsProduct = false;
+                if (newProduct != null) {
+                    // Check if the modelList is empty
+                    if (modelList.isEmpty()) {
+                        modelList.add(newProduct);
+                        itemAdapter.notifyDataSetChanged();
+                        return; // Exit the method if the list was empty
+                    }
+
+                    // Check if the modelList already contains the product
+
+                    for (Product existingProduct : modelList) {
+                        if (existingProduct != null && existingProduct.getItemID() != null &&
+                                existingProduct.getItemID().equals(newProduct.getItemID())) {
+                            containsProduct = true;
+                            break;
+                        }
+
+                    }
+                }
+                    // Add the product to the modelList if it's not already present
+                    if (!containsProduct) {
+                        modelList.add(newProduct);
+                        itemAdapter.notifyDataSetChanged();
+
+                    }
+
             }
 
             @Override
@@ -115,13 +146,14 @@ public class homeScreen extends AppCompatActivity /*CourseClickInterface*/ {
 
 
 
-
-
-    //@Override
-    //public void onCourseClick(int position) {
-
-      //  displaySheet(modelList.get(position));
-    //}
+    @Override
+    public void onItemClick(int position) {// we need to make sure the Product object gets parsed
+        Product selectedProduct = modelList.get(position);
+        Intent intent = new Intent(homeScreen.this, EditItems.class);
+        intent.putExtra("selectedProduct", selectedProduct);
+        startActivity(intent);
+        //displaySheet(modelList.get(position));
+    }
 
     private  void displaySheet(Product model) {
 
@@ -140,15 +172,22 @@ public class homeScreen extends AppCompatActivity /*CourseClickInterface*/ {
         descri = layout.findViewById(R.id.bmdescribe);
 
         Button edit = layout.findViewById(R.id.bmEdit);
-    }
-}
-        /*edit.setOnClickListener(new View.OnClickListener() {
+
+        edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent  intent=new Intent(homeScreen.this,EditItems.class);
+                intent.putExtra("item",model);
+                startActivity(intent);
 
             }
         });
-*/
+    }
+
+
+
+
+}
 
 
 
