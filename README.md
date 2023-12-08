@@ -1,4 +1,4 @@
-# THIS github contains a copy of the AI weed etection project created by Letso Mogwera cse20-064 
+# THIS github contains a copy of the AI weed detection project created by Letso Mogwera cse20-064 
 ISTRUCTIONS TO RUN CODE
 To run the code on a different machine would require one to:
 1.Set up a new google drive to download to store images and files
