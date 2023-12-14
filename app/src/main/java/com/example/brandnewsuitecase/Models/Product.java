@@ -4,19 +4,22 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class Product implements Parcelable {
-    private String itemName,price,description,itemID;
+public class Product  {
+    private String itemName,price,description;
     private String image;
+    private  String key;
+
 
     public Product() {
     }
 
-    public Product(String courseName, String price, String description, String image, String itemID) {
-        this.itemName = courseName;
+    public Product(String itemName, String price, String description, String image, String key) {
+        this.itemName = itemName;
         this.price = price;
         this.description = description;
         this.image = image;
-        this.itemID = itemID;
+        this.key = key;
+
     }
 
     protected Product(Parcel in) {
@@ -24,29 +27,18 @@ public class Product implements Parcelable {
         price = in.readString();
         description = in.readString();
         image = in.readString();//to load the image
-
-        itemID = in.readString();
     }
 
-    public static final Creator<Product> CREATOR = new Creator<Product>() {
-        @Override
-        public Product createFromParcel(Parcel in) {
-            return new Product(in);
-        }
-
-        @Override
-        public Product[] newArray(int size) {
-            return new Product[size];
-        }
-    };
 
     @Override
     public String toString() {
-        return
-                " courseName:" + itemName + "\n"+
-                        " price:" + price  +"\n"+
-                        " description:" + description + "\n"
-                ;
+        return "Product{" +
+                "itemName='" + itemName + '\'' +
+                ", price='" + price + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                ", key='" + key + '\'' +
+                '}';
     }
 
     public String getItemName() {
@@ -73,14 +65,12 @@ public class Product implements Parcelable {
         this.description = description;
     }
 
-
-
-    public String getItemID() {
-        return itemID;
+    public String getKey() {
+        return key;
     }
 
-    public void setItemID(String itemID) {
-        this.itemID = itemID;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getImage() {
@@ -91,20 +81,7 @@ public class Product implements Parcelable {
         this.image = image;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel parcel, int flags) {
-        parcel.writeString(itemName);
-        parcel.writeString(price);
-        parcel.writeString(description);
-        parcel.writeString(image);//writing parcelable object
-
-        parcel.writeString(itemID);
-    }
 
 
 

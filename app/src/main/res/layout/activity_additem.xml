@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/baseColor"
+    tools:context=".MyViews.AddItem">
+
+    <ScrollView
+        android:id="@+id/myScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="33dp">
+
+        <LinearLayout
+            android:id="@+id/linearLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/addsnap"
+                    android:layout_width="274dp"
+                    android:layout_height="145dp"
+                    android:src="@drawable/camera"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.496"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/Layout"
+                android:layout_width="355dp"
+                android:layout_height="match_parent"
+
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/emailLayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/nametxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_weight="1"
+                        android:text="name"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/productName"
+                        android:layout_width="295dp"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/edittextcolor"
+
+                        android:ems="10"
+                        android:inputType="textEmailAddress"
+                        android:text="name"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/passwordLayer"
+                    android:layout_width="340dp"
+                    android:layout_height="73dp"
+                    android:layout_marginTop="30dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/priceTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_weight="1"
+                        android:text="price"
+                        android:textColor="@color/white" />
+
+                    <EditText
+                        android:id="@+id/editPrice"
+                        android:layout_width="293dp"
+                        android:layout_height="51dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/edittextcolor"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:hint="price"
+                        android:textColor="@color/white" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/random"
+                    android:layout_width="336dp"
+                    android:layout_height="116dp"
+                    android:layout_marginTop="30dp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/describeTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_weight="1"
+                        android:text="description"
+                        android:textColor="@color/white" />
+
+
+                    <EditText
+                        android:id="@+id/ItemDescription"
+                        android:layout_width="292dp"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/edittextcolor"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="description"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/addItem"
+                    android:layout_width="184dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/buttonshape"
+                    android:text="save" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

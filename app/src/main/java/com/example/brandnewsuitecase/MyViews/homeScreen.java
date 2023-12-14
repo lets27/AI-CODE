@@ -1,193 +1,126 @@
 package com.example.brandnewsuitecase.MyViews;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import com.example.brandnewsuitecase.MyViews.AddItem;
 import com.example.brandnewsuitecase.Models.Product;
+import com.example.brandnewsuitecase.MyViews.RecyclerViewContent.ProductAdapter;
 import com.example.brandnewsuitecase.R;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class homeScreen extends AppCompatActivity implements Adapter.ItemClickInterface {
 
-    //private FirebaseAuth auth;
-    private Button btn;
-    private TextView txtUser;
-    //private FirebaseUser user;
-
-    private RecyclerView ReView;
-    private FloatingActionButton addBtn;
-    private FirebaseDatabase firebaseDatabase;
-    private RelativeLayout botSheet;
-    private ArrayList<Product> modelList;
+public class homeScreen extends AppCompatActivity{
+        ValueEventListener valueEventListener;
+    private RecyclerView recyclerView;
+    private FloatingActionButton addButton;
     private DatabaseReference databaseReference;
+    private List<Product> productList;
+    private ProductAdapter adapter;
 
-    private FloatingActionButton add;
 
-
-    private  Adapter itemAdapter;
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        recyclerView = findViewById(R.id.myRecycView);
+        addButton = findViewById(R.id.floating);
+        productList = new ArrayList<>();
 
-        botSheet = findViewById(R.id.bmSheet);
-        ReView = findViewById(R.id.myRecycView);
-        add = findViewById(R.id.floating);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(homeScreen.this, 1);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
-        modelList = new ArrayList<>();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("courses");
-        itemAdapter = new Adapter(modelList, homeScreen.this,this);
+        productList = new ArrayList<>();
+        adapter = new ProductAdapter(homeScreen.this, productList);
+        recyclerView.setAdapter(adapter);
 
-        // set recycler view
-        if (ReView != null) {
-            ReView.setLayoutManager(new LinearLayoutManager(this));
-            ReView.setAdapter(itemAdapter);
-
-
-        }
-
-        // Set up the click listener for the FloatingActionButton
-        add.setOnClickListener(new View.OnClickListener() {
+        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.START) {
             @Override
-            public void onClick(View view) {
-                // Start the AddItem activity
-                startActivity(new Intent(homeScreen.this, AddItem.class));
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // get item position and then call delete
+                int position = viewHolder.getAdapterPosition();
+                deleteItem(position);
             }
         });
+        //ataching our swipe helper to the recyclerview
+        helper.attachToRecyclerView(recyclerView);
 
-        // Fetch data from Firebase
-        getAllCourses();
+        // Set up Firebase database reference
+        databaseReference = FirebaseDatabase.getInstance().getReference("Shopping Items");
 
-
-    }
-
-    public void getAllCourses() {
-        modelList.clear();
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        // crating ValueEventListener to populate the RecyclerView
+        valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Product newProduct = snapshot.getValue(Product.class);
-                boolean containsProduct = false;
-                if (newProduct != null) {
-                    // Check if the modelList is empty
-                    if (modelList.isEmpty()) {
-                        modelList.add(newProduct);
-                        itemAdapter.notifyDataSetChanged();
-                        return; // Exit the method if the list was empty
-                    }
-
-                    // Check if the modelList already contains the product
-
-                    for (Product existingProduct : modelList) {
-                        if (existingProduct != null && existingProduct.getItemID() != null &&
-                                existingProduct.getItemID().equals(newProduct.getItemID())) {
-                            containsProduct = true;
-                            break;
-                        }
-
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                productList.clear();
+                for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
+                    Product product = itemSnapshot.getValue(Product.class);
+                    if (product != null) {
+                        product.setKey(itemSnapshot.getKey());
+                        productList.add(product);
                     }
                 }
-                    // Add the product to the modelList if it's not already present
-                    if (!containsProduct) {
-                        modelList.add(newProduct);
-                        itemAdapter.notifyDataSetChanged();
-
-                    }
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                itemAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                itemAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                itemAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                itemAdapter.notifyDataSetChanged();
+                // Handle onCancelled if needed
+            }
+        });
+
+        // Set up FloatingActionButton click listener
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(homeScreen.this, AddItem.class));
             }
         });
     }
 
+    private void deleteItem(int position) {
+        //getting the position of the item
+        if (position >= 0 && position < productList.size()) {
+            Product productToDelete = productList.get(position);
 
+            // Remove the item from Firebase
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Shopping Items");
+            reference.child(productToDelete.getKey()).removeValue();
 
+            // Remove the item from the list and notify the adapter
+            productList.remove(position);
+            adapter.notifyItemRemoved(position);
+        }
+    }
 
     @Override
-    public void onItemClick(int position) {// we need to make sure the Product object gets parsed
-        Product selectedProduct = modelList.get(position);
-        Intent intent = new Intent(homeScreen.this, EditItems.class);
-        intent.putExtra("selectedProduct", selectedProduct);
-        startActivity(intent);
-        //displaySheet(modelList.get(position));
+    protected void onDestroy() {
+        super.onDestroy();
+        // removing ValueEventListener when the activity is destroyed
+        if (valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+        }
     }
-
-    private  void displaySheet(Product model) {
-
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        View layout = LayoutInflater.from(this).inflate(R.layout.bottomsheet, botSheet);
-
-        bottomSheetDialog.setContentView(layout);
-        bottomSheetDialog.setCancelable(false);
-        bottomSheetDialog.setCanceledOnTouchOutside(true);
-        bottomSheetDialog.show();
-
-        TextView descri;
-        TextView itemname = layout.findViewById(R.id.title);
-        ImageView image = layout.findViewById(R.id.myView);
-        TextView price = layout.findViewById(R.id.price);
-        descri = layout.findViewById(R.id.bmdescribe);
-
-        Button edit = layout.findViewById(R.id.bmEdit);
-
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent  intent=new Intent(homeScreen.this,EditItems.class);
-                intent.putExtra("item",model);
-                startActivity(intent);
-
-            }
-        });
-    }
-
-
-
-
 }
 
-
-
+//
